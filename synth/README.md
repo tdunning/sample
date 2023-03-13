@@ -17,7 +17,7 @@ You can do the entire data generation programatically using the `generate-invent
 Inventory generation only needs to be done once for an output directory. The options for this script include:
 
 | Option | Description |
--------+----------
+| ------ | ----------  |
 | `--directory` | The directory where the inventory should be written |
 | `--count`      | The number of servers for which data should be generated |
 
@@ -29,12 +29,14 @@ Data generation can be done once or multiple times to generate multiple output f
 
 The command line options include the following
 
-| Option | Description |
--------+----------
+| Option        | Description |
+| :------------ | ---------   |
 | `--directory` | The directory where the data should be written |
-| `--date`        | the base date and, optionally, hour for the file. This should be in the format YYYY-MM-DD or YYYY-MM-DDTHH. If you specify an hour, then the data will span one hour. If you specify just a date, then 24 hours of data will be generated |
-| `--interval`   | the interval between measurements in seconds. The default is 3600 (1 hour) |
-| `--fuzz`        | the maximum variation in time between samples. Default is 0 |
-| `--interval`   | specifies that beginning and end times for each measurement are included in the output. This is the default. |
-| `--end`         | specifies that only the end time for each measurement is included. This is an alternative to`--interval` |
-| `--format=f` | specifies the output format for the data. The value of f can be csv or parquet |
+| `--date`      | the base time in the format YYYY-MM-DD or YYYY-MM-DDTHH |
+| `--interval`  | the interval between measurements in seconds. The default is 3600 (1 hour) |
+| `--fuzz`      | the maximum variation in time between samples. Default is 0 |
+| `--interval`  | specifies that beginning and end times for each measurement are included in the output. This is the default. |
+| `--end`       | specifies that only the end time for each measurement is included. This is an alternative to`--interval` |
+| `--format=f`  | specifies the output format for the data. The value of f can be csv or parquet |
+
+Note that if you specify the base time with an hour, only an hour of data will be generated. If you specify a date with no time, then 24 hours of data will be generated.
