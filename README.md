@@ -1,7 +1,11 @@
 # Sample power data
 
-This directory contains an example of power data (in the `data` directory) as well as code to use (log-synth)[https://github.com/tdunning/log-synth] to generate the machine inventory and power data (in the `synth` directory.
+This directory contains an example of power data (in the `data` directory) as well as code to generate the new data (in the `synth` directory.
+
+The purpose is to make it easy to mock up data that a producer expects to produce so that a consumer can move forward with testing while the producer is still implementing the export process.
 
 # Dependencies
 
-The sample data itself has no dependencies. To generate new or additional data, you will need to install `log-synth` in a directory adjacent to this directory and have duckdb available. See the README in the `synth` directory for more information.
+The sample data itself has no dependencies. 
+
+To generate new or additional data, you will need duckdb available for python. See the README in the `synth` directory for more information.
