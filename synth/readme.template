@@ -1,0 +1,29 @@
+---
+glcp_customer_id: {0:016x}{1:016x}
+devices: inventory.csv
+data: data-*-*-*.csv
+update: 24 hr
+---
+
+# Description
+
+These data files record power use and related parameters from the
+fictional North Dakota (ND-*), Washington (WA-*) and Germany (DE-*) data
+centers. This data is synthetic, not real.
+
+In a production setting, this README would contain information about
+how the data was collected along with contact information for the
+group producing the data.
+
+# Metadata
+
+The metadata at the top of this file indicates where the inventory
+file that describes all of the machines generating data and their
+location. It also indicates the naming scheme for data files and the
+update interval for this directory.
+
+# Deployment
+
+Normally the data as shown here would be stored in S3 objects or 
+equivalent rather than being stored in files. A program consuming this
+data would use a notification system or polling to find new data.

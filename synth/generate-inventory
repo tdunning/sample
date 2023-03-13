@@ -1,0 +1,61 @@
+#!python3
+
+import argparse
+import duckdb
+import pandas as pd
+import numpy as np
+import os, os.path, subprocess, random, io
+
+
+def conv(x, n):
+    r = []
+    for i in range(n):
+        r.append(chr(x % 26 + 65))
+        x = x//26
+    return "".join(r), x
+
+def sn(x1, x2):
+    p1, x1 = conv(x1, 3)
+    p2 = "{0:05d}".format(x1 % 100000)
+    p3, x = conv(x2, 2)
+    return p1 + p2 + p3
+
+def linecount(f):
+    with open(f) as input:
+        return len(list(input))
+
+parser = argparse.ArgumentParser(
+    prog='generate-inventory',
+    description='Generates a server inventory file')
+
+
+parser.add_argument('--directory', help='The directory where the inventory should be written', required=True)
+parser.add_argument('--count', help='The number of servers for which data should be generated', required=True, type=int)
+
+args = parser.parse_args()
+
+os.mkdir(args.directory)
+
+# Generate README from template
+with open("readme.template", "r") as input:
+    readme = input.read()
+
+with open(os.path.join(args.directory, "README.md"), "w") as output:
+    output.write(readme.format(random.getrandbits(64), random.getrandbits(64)))
+
+# now generate the random bits of the inventory 
+raw_inv = pd.DataFrame(data = dict(
+    sn = map(sn, np.random.randint(0, 1000000000, args.count),
+                 np.random.randint(0, 1000000000, args.count)),
+    type = np.random.randint(1, linecount('server_types.csv'), args.count),
+    loc = np.random.randint(1, linecount('locations.csv'), args.count)))
+
+# now convert integers to realistic server types and locations
+q1 = """
+copy (
+  select sn, model, product_id, location 
+  from raw_inv join 'server_types.csv' using(type)
+               join 'locations.csv' using(loc)
+) to '{0:s}' (HEADER)
+"""
+duckdb.sql(q1.format(os.path.join(args.directory, "inventory.csv")))

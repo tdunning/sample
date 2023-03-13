@@ -1,0 +1,51 @@
+#!python3
+
+
+import argparse
+import duckdb
+import pandas as pd
+import numpy as np
+import os, os.path, subprocess, random, io
+import dateutil.parser
+import datetime
+
+
+parser = argparse.ArgumentParser(
+    prog='generate-inventory',
+    description='Generates a server inventory file')
+
+parser.add_argument('--directory', help = 'The directory where the data should be written', required=True)
+parser.add_argument('--date', help = 'the base time in the format YYYY-MM-DD or YYYY-MM-DDTHH', required=True)
+parser.add_argument('--interval', help = 'the interval between measurements in seconds. The default is 3600 (1 hour)', required=True, type=int)
+parser.add_argument('--fuzz', help = 'the maximum variation in time between samples. Default is 0', required=True, type=int)
+parser.add_argument('--end', help = 'specifies that only the end time for each measurement is included')
+parser.add_argument('--format', help = 'specifies the output format for the data. The value of f can be csv or parquet')
+
+args = parser.parse_args()
+
+if args.date.find("T") < 0:
+    time_range = 24 * 3600
+    base = dateutil.parser.parse(args.date)
+    date_format = 'data-{:%Y-%m-%d}'
+else:
+    time_range = 3600
+    base = dateutil.parser.parse(args.date + "Z")
+    date_format = 'data-{:%Y-%m-%dT%H}'
+
+times = pd.DataFrame(dict(t=range(0,time_range,args.interval)))
+
+duckdb.sql("""
+copy (
+    select sn, model, product_id, location,
+           timestamp '{0:s}' + to_hours(t) start_time,
+           timestamp '{0:s}' + to_hours(t+1) end_time,
+           scale * least(random(), random()) measurement_value, unit, name
+    from times, 'measurements.csv', read_csv_auto('{2:s}', HEADER=True)
+    order by t, sn
+) to '{1:s}' HEADER
+""".format(str(base),
+               os.path.join(args.directory, date_format.format(base)),
+               os.path.join(args.directory, "inventory.csv")))
+
+
+
