@@ -44,3 +44,5 @@ The command line options include the following
 | `--format=f` | specifies the output format for the data. The value of f can be csv or parquet |
 
 Note that if you specify the base time with an hour, only an hour of data will be generated. If you specify a date with no time, then 24 hours of data will be generated.
+
+Note also that the `--fuzz`, `--end` and `--format` options are not yet supported.
