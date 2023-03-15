@@ -1,4 +1,6 @@
-# Sample power data
+# Mock data for power
+
+This project is intended to provide a clean way for producers and consumers of power data to develop a data transfer.
 
 This directory contains an example of power data (in the `data` directory) as well as code to generate the new data (in the `synth` directory.
 
